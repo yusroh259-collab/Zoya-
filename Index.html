@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZOYA - Learn. Grow. Earn.</title>
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABtSURBVHgB7c9BCQAgDMBAO7D7F3gUQpA0e5lYIqKq6u7u7g8AAAD8XwAAAPBfAQAAwHsBAADAPgEAAMAfAQAAwD8BAADAPwEAAMAfAQAAwD8BAADAPwEAAMAfAQAAwD8BAADAPwEAAMAfAQAAwD8BAADAPwEAAMAfAQAAwD8BAADAPwEAAMAfAQAAwD8BAADAPwEAgOADAGpEwX5+5V7dAAAAAElFTkSuQmCC">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig = { apiKey:"YOUR_FIREBASE_API_KEY", authDomain:"YOUR_PROJECT.firebaseapp.com", projectId:"YOUR_PROJECT_ID", appId:"YOUR_APP_ID" };
+const app = initializeApp(firebaseConfig);
+window.db=getFirestore(app); window.fs={collection,doc,setDoc,onSnapshot};
+</script>
+<style>
+:root{--bg:#FDFCF8;--card:#FFFFFF;--text:#1E293B;--border:#E9E8FF;--primary:#5B4DFF;--accent:#00D26A;--fire:#FF6B35;--muted:#64748B}
+[data-theme="dark"]{--bg:#0B0B1A;--card:#15152B;--text:#E2E8F0;--border:#2A2A4A;--primary:#7C6DFF}
+*{transition:.25s;box-sizing:border-box}
+body{margin:0;font-family:'Plus Jakarta Sans', Segoe UI;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:12px}
+.card{background:var(--card);width:100%;max-width:680px;border-radius:24px;padding:22px;margin-bottom:14px;box-shadow:0 4px 24px rgba(91,77,255,.08);border:1px solid var(--border)}
+.topbar{display:flex;justify-content:space-between;align-items:center}
+.themeToggle{width:44px;height:44px;border-radius:12px;border:2px solid var(--border);background:var(--card);cursor:pointer;font-size:18px}
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#5B4DFF,#7C6DFF);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:22px;position:relative}
+.logo::after{content:'🌱';position:absolute;bottom:-4px;right:-4px;font-size:12px}
+h1{margin:0;font-size:22px;font-weight:800;display:flex;gap:10px;align-items:center}.sub{text-align:center;opacity:.7;font-size:13px;margin:6px 0 14px;color:var(--muted)}
+select,input{width:100%;padding:13px;border-radius:12px;border:2px solid var(--border);margin:6px 0;font-size:15px;background:var(--card);color:var(--text)}
+button.main{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-weight:700;margin-top:10px;cursor:pointer}
+button.pay{width:100%;padding:16px;background:var(--fire);color:#fff;border:none;border-radius:14px;font-weight:800;margin-top:12px;font-size:18px;cursor:pointer}
+.adCard{background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:2px solid #FFDDBB;border-radius:16px;padding:14px;margin:12px 0;color:#1E293B;position:relative}
+.googleAd{background:var(--bg);border:1px dashed var(--border);border-radius:12px;padding:12px;margin:12px 0;text-align:center;position:relative}
+.skipBtn{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer}
+.opt{width:100%;padding:14px;margin:8px 0;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--text);text-align:left;cursor:pointer}.opt.correct{background:#DCFCE7;border-color:var(--accent)}.opt.wrong{background:#FEE2E2;border-color:#EF4444}
+.bar{height:10px;background:var(--border);border-radius:10px;overflow:hidden;margin:12px 0}.fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));width:0%;transition:.4s}
+.streakBox{background:linear-gradient(135deg,var(--fire),#FF8F5E);color:#fff;padding:12px 16px;border-radius:16px;display:flex;justify-content:space-between;margin:10px 0}
+.calcBox{background:var(--text);color:var(--bg);border-radius:16px;padding:16px;margin:12px 0}[data-theme="dark"].calcBox{background:#E2E8F0;color:#0B0B1A}
+.explain{background:var(--border);border-left:4px solid var(--primary);padding:12px;border-radius:12px;margin-top:10px;display:none}.explain.show{display:block}
+.langSearch{position:relative}.langList{position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:var(--card);border:2px solid var(--border);border-radius:12px;z-index:10;display:none}
+.langItem{padding:10px;cursor:pointer;border-bottom:1px solid var(--border)}
+.day{width:30px;height:30px;border-radius:50%;background:var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:11px;margin:2px;font-weight:700}.day.done{background:var(--accent);color:#fff}
+.profileHeader{display:flex;gap:10px;align-items:center;background:var(--border);padding:10px;border-radius:14px;margin:10px 0}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
+</style>
+</head>
+<body>
+<div style="width:100%;max-width:680px">
+<div class="card" id="screen1">
+<div class="topbar"><div style="display:flex;gap:10px;align-items:center"><div class="logo">Z</div><h1>ZOYA</h1></div><button class="themeToggle" onclick="toggleTheme()" id="themeBtn">🌙</button></div>
+<div class="sub">Baby 🌱 to Boss 👑 • Google every 20 Qs • Marketplace every 7 Qs • Baby=0 ads • Max 3/session • Skip 5s</div>
+<div class="googleAd" id="topBanner"><button class="skipBtn" onclick="this.parentElement.style.display='none'">✕ Skip</button><small>AD • Supports Zoya</small>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+<div class="langSearch"><input id="langInput" placeholder="Language: Yoruba, Chinese..." oninput="filterLangs(this.value)" onclick="showLangList()"><div class="langList" id="langList"></div></div>
+<div style="font-size:12px;display:flex;justify-content:space-between"><span>Selected: <b id="selectedLangDisplay">English</b> (<span id="selectedCode">en</span>)</span><span>City: <b id="userCityLabel">Lagos</b> <button style="font-size:10px;border-radius:10px;border:1px solid var(--border)" onclick="showCityPicker()">Change</button></span></div>
+<div class="langSearch"><div class="langList" id="cityList" style="display:none"></div></div>
+<select id="role" onchange="toggleRole()"><option value="learner">LEARN FREE on Zoya</option><option value="adult">ADVERTISE ON ZOYA (Pay)</option></select>
+<div id="learnerSetup"><div id="statusList"></div><button class="main" onclick="startLearner()">Enter Zoya →</button></div>
+<div id="advertiserSetup" style="display:none">
+<select id="bizCategory" onchange="calculatePrice()"><option value="food">🍲 Food - ₦80/day</option><option value="fashion">👕 Fashion - ₦120/day</option><option value="trader">📦 Trader - ₦100/day</option><option value="property">🏠 Property - ₦300/day</option><option value="bigbiz">🏢 Big Biz - ₦500/day</option></select>
+<select id="duration" onchange="calculatePrice()"><option value="7">7 Days</option><option value="30" selected>30 Days</option><option value="90">90 Days -25%</option></select>
+<select id="reach" onchange="calculatePrice()"><option value="lga">LGA only x1</option><option value="city" selected>City x1.5 (Best)</option><option value="state">State x2.5</option><option value="nation">Whole Nigeria x4</option></select>
+<div class="calcBox">Pay: ₦<b id="totalPrice">0</b> • ~<span id="estViews">0</span> views</div>
+<input id="bizName" placeholder="Business name"><input id="bizWhat" placeholder="Ad text"><input id="bizLocation" placeholder="Location"><input id="bizPhone" placeholder="WhatsApp"><input id="bizEmail" placeholder="Email">
+<button class="pay" onclick="payNow()">💳 Pay ₦<span id="payBtnAmount">0</span></button>
+</div>
+</div>
+<div class="card" id="profileScreen" style="display:none">
+<div class="topbar"><h1>👤 Zoya Profile</h1><button class="themeToggle" onclick="toggleTheme()">🌙</button></div>
+<div class="sub">Everyone has a Zoya profile. City logic uses this.</div>
+<div style="text-align:center"><div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;background:var(--border);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:40px" onclick="document.getElementById('avatarInput').click()">🧒</div><input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+<div style="display:flex;gap:6px;justify-content:center;margin-top:8px"><span onclick="setEmoji('🧒')" style="font-size:24px;cursor:pointer">🧒</span><span onclick="setEmoji('👧')" style="font-size:24px;cursor:pointer">👧</span><span onclick="setEmoji('👨‍🎓')" style="font-size:24px;cursor:pointer">👨‍🎓</span><span onclick="setEmoji('👨‍💼')" style="font-size:24px;cursor:pointer">👨‍💼</span><span onclick="setEmoji('👩‍🍳')" style="font-size:24px;cursor:pointer">👩‍🍳</span></div></div>
+<input id="profileName" placeholder="Full name"><input id="profileAge" type="number" placeholder="Age"><select id="profileCountry"><option value="Nigeria" selected>🇳🇬 Nigeria</option><option value="Ghana">🇬🇭 Ghana</option><option value="Kenya">🇰🇪 Kenya</option></select><select id="profileState"><option>Lagos</option><option>Abuja</option><option>Kano</option></select><select id="profileCity"><option>Lagos</option><option>Ikeja</option><option>Yaba</option><option>Surulere</option><option>Lekki</option><option>Ibadan</option></select><input id="profileLGA" placeholder="LGA e.g. Yaba"><select id="profileRole"><option>Baby 👶</option><option>Student 🎓</option><option>Adult 💼</option><option>Trader 📦</option></select><input id="profileBio" placeholder="Bio"><input id="profileBizName" placeholder="Business name (if trader)"><button class="pay" onclick="saveProfile()">✅ Save Profile</button>
+</div>
+<div class="card" id="dashboard" style="display:none">
+<div id="profileHeader"></div>
+<div class="topbar"><b id="modeLabel">Zoya Learning</b><div style="display:flex;gap:8px;align-items:center"><span style="font-size:11px;opacity:.6" id="adCounter">Ads 0/3</span><span style="font-size:11px" id="langLabel">English</span><button class="themeToggle" onclick="toggleTheme()" id="themeBtn2">🌙</button></div></div>
+<div class="streakBox"><div>🔥 <b id="streakNum">0</b></div><div>Best <b id="bestStreak">0</b></div><div>⭐ <span id="score">0</span></div><div>Q <span id="qCount">0</span></div></div>
+<div id="streakCal"></div><div class="bar"><div class="fill" id="fill"></div></div>
+<div id="adSlot" class="adCard" style="display:none"><button class="skipBtn" style="background:#000" onclick="closeAd()">✕ Skip</button><span style="background:#FF6B35;color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800">ZOYA MARKET • PAID</span> <small id="adExpiry"></small><div style="display:flex;gap:10px;margin-top:8px"><div style="font-size:28px" id="adIcon">💼</div><div><b id="adName"></b><br><small id="adWhat"></small><br><small id="adLoc"></small></div></div><a id="adChat" href="#" target="_blank" style="display:block;margin-top:8px;padding:10px;background:#25D366;color:#fff;border-radius:10px;text-align:center;text-decoration:none;font-weight:700">💬 WhatsApp</a></div>
+<div id="googleInterstitial" class="googleAd" style="display:none"><button class="skipBtn" id="googleSkipBtn" style="display:none" onclick="closeGoogleAd()">Skip in <span id="skipTimer">5</span>s →</button><small>AD • Supports Zoya • Skippable 5s</small>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="3333333333" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
+<div id="q" style="font-weight:700;margin:12px 0;font-size:18px"></div><div id="opts"></div><div class="explain" id="explainBox"></div><button id="nextBtn" onclick="nextQ()" style="display:none" class="main">Next →</button>
+</div>
+</div>
+<script>
+function getTheme(){return localStorage.getItem('zoyaTheme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);localStorage.setItem('zoyaTheme',t);let i=t==='dark'?'☀️':'🌙';document.getElementById('themeBtn').innerText=i;let b2=document.getElementById('themeBtn2');if(b2)b2.innerText=i}
+window.toggleTheme=()=>{let c=document.documentElement.getAttribute('data-theme');applyTheme(c==='dark'?'light':'dark')};applyTheme(getTheme());
+const NIGERIA_CITIES=["Lagos","Ikeja","Yaba","Surulere","Lekki","Ikorodu","Abuja","Kano","Ibadan","Port Harcourt","Benin City","Aba","Jos","Ilorin","Enugu","Kaduna","Calabar","Uyo","Onitsha","Warri"];
+let userCity=localStorage.getItem('userCity')||"Lagos";
+function showCityPicker(){let l=document.getElementById('cityList');l.innerHTML=NIGERIA_CITIES.map(c=>`<div class="langItem" onclick="setCity('${c}')">${c}</div>`).join('');l.style.display='block';}
+window.setCity=(c)=>{userCity=c;localStorage.setItem('userCity',c);document.getElementById('userCityLabel').innerText=c;document.getElementById('cityList').style.display='none';}
+document.getElementById('userCityLabel').innerText=userCity;
+const WORLD_LANGS=[["en","English"],["yo","Yorùbá"],["ig","Igbo"],["ha","Hausa"],["fr","French"],["es","Spanish"],["sw","Swahili"],["ar","Arabic"],["zh","Chinese"],["hi","Hindi"],["pt","Portuguese"],["ru","Russian"],["de","German"],["ja","Japanese"],["pcm","Pidgin"],["zu","Zulu"]];
+let teachLangCode='en', teachLangName='English';
+function showLangList(){document.getElementById('langList').style.display='block';filterLangs('')}
+function filterLangs(q){let list=document.getElementById('langList');let query=q.toLowerCase();let f=WORLD_LANGS.filter(([c,n])=>n.toLowerCase().includes(query)||c.includes(query)).slice(0,30);list.innerHTML=f.map(([c,n])=>`<div class="langItem" onclick="selectLang('${c}','${n}')"><b>${n}</b> <small>${c}</small></div>`).join('');list.style.display='block'}
+window.selectLang=(code,name)=>{teachLangCode=code;teachLangName=name;document.getElementById('selectedLangDisplay').innerText=name;document.getElementById('selectedCode').innerText=code;document.getElementById('langInput').value=name;document.getElementById('langList').style.display='none';document.getElementById('langLabel').innerText=name;};
+document.addEventListener('click',e=>{if(!e.target.closest('.langSearch')){document.getElementById('langList').style.display='none';document.getElementById('cityList').style.display='none';}});
+const BASE_DB={"ABC":[{base:"Tap A - Apple", big:"🍎 A", options:["A","B"], c:0, explain:"A first letter"}],"Colors":[{base:"Red 🔴?", options:["Red","Blue"], c:0, explain:"RED"}],"JAMB":[{base:"Best JAMB strategy?", options:["Easy first","Hard first"], c:0, explain:"Easy first wins"}],"Math":[{base:"15% of 200?", options:["30","15"], c:0, explain:"30"}]};
+const STATUSES={"Baby 👶":{subs:["ABC","Colors"]},"Student 🎓":{subs:["JAMB","Math"]},"Adult 💼":{subs:["JAMB","Math"]}};
+const CATEGORY_RATES={food:{rate:80,icon:"🍲"},fashion:{rate:120,icon:"👕"},trader:{rate:100,icon:"📦"},property:{rate:300,icon:"🏠"},bigbiz:{rate:500,icon:"🏢"}};
+const REACH_MULT={lga:1,city:1.5,state:2.5,nation:4};
+let selectedPrice=0;
+window.calculatePrice=()=>{let cat=document.getElementById('bizCategory').value;let days=parseInt(document.getElementById('duration').value);let reach=document.getElementById('reach').value;let base=CATEGORY_RATES[cat].rate;let subtotal=base*days*REACH_MULT[reach];let discount=days>=90?subtotal*0.25:0;selectedPrice=Math.round(subtotal-discount);document.getElementById('totalPrice').innerText=selectedPrice.toLocaleString();document.getElementById('payBtnAmount').innerText=selectedPrice.toLocaleString();document.getElementById('estViews').innerText=Math.round(selectedPrice*0.7).toLocaleString();return selectedPrice;};calculatePrice();
+window.toggleRole=()=>{let r=document.getElementById('role').value;document.getElementById('learnerSetup').style.display=r==='learner'?'block':'none';document.getElementById('advertiserSetup').style.display=r==='adult'?'block':'none';if(r==='learner'){document.getElementById('statusList').innerHTML=Object.keys(STATUSES).map(k=>`<div style="padding:14px;border:2px solid var(--border);border-radius:14px;margin:6px 0;cursor:pointer" onclick="pickStatus('${k}')"><b>${k}</b></div>`).join('');}};toggleRole();window.pickStatus=(k)=>{window._pickedStatus=k; if(!localStorage.getItem('zoyaProfile')){showProfileScreen();}}
+let userProfile=JSON.parse(localStorage.getItem('zoyaProfile')||'null');
+window.setEmoji=(e)=>{document.getElementById('avatarPreview').innerText=e;document.getElementById('avatarPreview').dataset.avatar=e;}
+window.previewAvatar=(input)=>{if(input.files&&input.files[0]){let reader=new FileReader();reader.onload=(ev)=>{document.getElementById('avatarPreview').innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;document.getElementById('avatarPreview').dataset.avatar=ev.target.result;};reader.readAsDataURL(input.files[0]);}}
+function showProfileScreen(){document.getElementById('screen1').style.display='none';document.getElementById('dashboard').style.display='none';document.getElementById('profileScreen').style.display='block';}
+window.saveProfile=async()=>{let name=document.getElementById('profileName').value;if(!name)return alert('Enter name');let avatar=document.getElementById('avatarPreview').dataset.avatar||document.getElementById('avatarPreview').innerText||'🧒';userProfile={name,avatar,age:document.getElementById('profileAge').value,country:document.getElementById('profileCountry').value,state:document.getElementById('profileState').value,city:document.getElementById('profileCity').value,lga:document.getElementById('profileLGA').value,role:document.getElementById('profileRole').value,bio:document.getElementById('profileBio').value,bizName:document.getElementById('profileBizName').value,level:userProfile?.level||1,xp:userProfile?.xp||0,id:userProfile?.id||'zoya_'+Date.now(),joinedAt:userProfile?.joinedAt||Date.now()};localStorage.setItem('zoyaProfile',JSON.stringify(userProfile));localStorage.setItem('userCity',userProfile.city);userCity=userProfile.city;document.getElementById('userCityLabel').innerText=userCity;try{await fs.setDoc(fs.doc(window.db,"zoya_profiles",userProfile.id),userProfile);}catch(e){}document.getElementById('profileScreen').style.display='none';document.getElementById('dashboard').style.display='block';renderProfileHeader();switchExam(userProfile.role);}
+function renderProfileHeader(){if(!userProfile)return;let h=`<div class="profileHeader"><div class="avatar">${userProfile.avatar.length>4?`<img src="${userProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:userProfile.avatar}</div><div style="flex:1"><b>${userProfile.name}</b> <small style="opacity:.6">${userProfile.city} • Lv ${userProfile.level}</small><br><small>${userProfile.bio||userProfile.role}</small></div><button style="padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:12px" onclick="showProfileScreen()">Edit</button></div>`;let ex=document.getElementById('profileHeader');if(!ex){let d=document.createElement('div');d.id='profileHeader';d.innerHTML=h;document.getElementById('dashboard').prepend(d);}else ex.innerHTML=h;}
+if(userProfile) renderProfileHeader();
+async function translateText(t,lang){if(lang==='en')return t;try{let r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(t)}&langpair=en|${lang.split('-')[0]}`);let d=await r.json();if(d.responseData?.translatedText)return d.responseData.translatedText;}catch(e){}return t;}
+let adStats={googleShown:0,marketplaceShown:0,questionsSinceLastGoogle:20,questionsSinceLastMarket:7,maxGooglePerSession:3,isBabyMode:false,lastAdWasGoogle:false};
+function shouldShowGoogleAd(){if(adStats.isBabyMode)return false;if(adStats.googleShown>=adStats.maxGooglePerSession)return false;if(adStats.questionsSinceLastGoogle<20)return false;if(adStats.lastAdWasGoogle && adStats.questionsSinceLastMarket<2)return false;return true;}
+function shouldShowMarketplaceAd(){if(adStats.isBabyMode)return false;if(adStats.questionsSinceLastMarket<7)return false;if(!adStats.lastAdWasGoogle && adStats.questionsSinceLastGoogle<2)return false;if(adStats.marketplaceShown>=6)return false;return true;}
+function updateAdCounter(){document.getElementById('adCounter').innerText=`Ads ${adStats.googleShown}/${adStats.maxGooglePerSession}`;}
+window.GLOBAL_ADS=[];window.listenToAds=()=>{try{fs.onSnapshot(fs.collection(window.db,"paidAds"), snap=>{let a=[];snap.forEach(d=>{let data=d.data();let exp=data.expiry.toMillis?data.expiry.toMillis():data.expiry;if(exp>Date.now())a.push(data);});window.GLOBAL_ADS=a;});}catch(e){window.GLOBAL_ADS=JSON.parse(localStorage.getItem('lifeQuestPaidAds')||'[]');}}
+window.payNow=async()=>{let price=calculatePrice();let name=document.getElementById('bizName').value,what=document.getElementById('bizWhat').value,loc=document.getElementById('bizLocation').value,phone=document.getElementById('bizPhone').value,email=document.getElementById('bizEmail').value||'test@test.com';if(!name||!what||!loc||!phone)return alert('Fill all');let ref="Zoya_"+Date.now();let ad={name,what,loc,phone,email,category:document.getElementById('bizCategory').value,reach:document.getElementById('reach').value,days:parseInt(document.getElementById('duration').value),price,expiry:Date.now()+parseInt(document.getElementById('duration').value)*86400000,icon:CATEGORY_RATES[document.getElementById('bizCategory').value].icon};try{await fs.setDoc(fs.doc(window.db,"pendingAds",ref),ad);}catch(e){}let handler=PaystackPop.setup({key:"pk_test_YOUR_PUBLIC_KEY",email,amount:price*100,currency:"NGN",ref,callback:(res)=>{alert('✅ Paid '+res.reference+' LIVE on Zoya!');let ads=JSON.parse(localStorage.getItem('lifeQuestPaidAds')||'[]');ad.ref=res.reference;ads.unshift(ad);localStorage.setItem('lifeQuestPaidAds',JSON.stringify(ads));document.getElementById('screen1').style.display='none';document.getElementById('dashboard').style.display='block';listenToAds();switchExam(window._pickedStatus||"Adult 💼");},onClose:()=>alert('Cancelled')});handler.openIframe();}
+let qList=[], idx=0, score=0, currentQ=null;
+window.startLearner=()=>{let s=window._pickedStatus||"Student 🎓";adStats.isBabyMode=s.includes('Baby');if(adStats.isBabyMode){document.getElementById('adCounter').innerText='Baby - No ads 💛';document.getElementById('topBanner').style.display='none';}document.getElementById('screen1').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('modeLabel').innerText=s+' • '+teachLangName;listenToAds();switchExam(s);}
+window.switchExam=async (status)=>{let subs=STATUSES[status].subs;let base=BASE_DB[subs[0]];qList=[];document.getElementById('q').innerText='Translating to '+teachLangName+'...';for(let item of base){let tq=await translateText(item.base, teachLangCode);let topts=[];for(let o of item.options){topts.push(await translateText(o, teachLangCode));}let texp=await translateText(item.explain, teachLangCode);qList.push({...item,translatedQ:tq,translatedOpts:topts,translatedExp:texp});}qList=[...qList,...qList,...qList,...qList,...qList];idx=0;score=0;renderStreak();showQ();}
+function showQ(){
+if(idx>=qList.length){let d=markTodayComplete();renderStreak();document.getElementById('q').innerHTML=`🎉 Done on Zoya! Score ${score}/${qList.length} - 🔥${d.streak} streak! No more ads this session.`;document.getElementById('opts').innerHTML='';return;}
+if(shouldShowGoogleAd()){showGoogleInterstitial();return;}document.getElementById('googleInterstitial').style.display='none';
+if(shouldShowMarketplaceAd() && idx>0){showMarketplaceAd();}else{document.getElementById('adSlot').style.display='none';}
+currentQ=qList[idx];document.getElementById('q').innerHTML=currentQ.big?`<div style="font-size:50px;text-align:center">${currentQ.big}</div>${currentQ.translatedQ}`:currentQ.translatedQ;document.getElementById('opts').innerHTML=currentQ.translatedOpts.map((o,i)=>`<button class="opt" onclick="ans(${i})">${o}</button>`).join('');document.getElementById('fill').style.width=`${(idx/qList.length)*100}%`;document.getElementById('score').innerText=score;document.getElementById('qCount').innerText=idx+1;document.getElementById('explainBox').classList.remove('show');document.getElementById('nextBtn').style.display='none';}
+function showGoogleInterstitial(){document.getElementById('googleInterstitial').style.display='block';document.getElementById('q').innerText='';document.getElementById('opts').innerHTML='';document.getElementById('adSlot').style.display='none';adStats.googleShown++;adStats.questionsSinceLastGoogle=0;adStats.lastAdWasGoogle=true;updateAdCounter();let skipBtn=document.getElementById('googleSkipBtn');let timerSpan=document.getElementById('skipTimer');skipBtn.style.display='none';let count=5;timerSpan.innerText=count;let interval=setInterval(()=>{count--;timerSpan.innerText=count;if(count<=0){clearInterval(interval);skipBtn.innerText='Skip ad →';skipBtn.style.display='block';}},1000);}
+window.closeGoogleAd=()=>{document.getElementById('googleInterstitial').style.display='none';idx++;adStats.questionsSinceLastGoogle=0;adStats.questionsSinceLastMarket++;showQ();}
+function showMarketplaceAd(){
+let allAds=(window.GLOBAL_ADS.length?window.GLOBAL_ADS:JSON.parse(localStorage.getItem('lifeQuestPaidAds')||'[]')).filter(a=>a.expiry>Date.now());
+let relevantAds=allAds.filter(ad=>{
+if(ad.reach==="nation")return true;
+if(ad.reach==="city") return ad.loc.toLowerCase().includes(userCity.toLowerCase()) || userCity.toLowerCase().includes(ad.loc.toLowerCase());
+if(ad.reach==="lga") return ad.loc.toLowerCase()===userCity.toLowerCase();
+if(ad.reach==="state") return true;
+return false;
+});
+if(!relevantAds.length) relevantAds=allAds.filter(a=>a.reach==="nation");
+if(!relevantAds.length) relevantAds=[{name:"Zoya Demo Store",what:"Advertise your business here - "+userCity,loc:userCity,phone:"0800000001",icon:"💼",expiry:Date.now()+86400000}];
+let ad=relevantAds[Math.floor(Math.random()*relevantAds.length)];document.getElementById('adSlot').style.display='block';document.getElementById('adName').innerText=ad.name;document.getElementById('adWhat').innerText=ad.what;document.getElementById('adLoc').innerText=ad.loc+` • ${ad.reach} • ${userCity}`;document.getElementById('adIcon').innerText=ad.icon||"💼";document.getElementById('adExpiry').innerText=`Expires ${new Date(ad.expiry.toMillis?ad.expiry.toMillis():ad.expiry).toLocaleDateString()}`;document.getElementById('adChat').href=`https://wa.me/234${ad.phone.replace(/^0/,'')}`;adStats.marketplaceShown++;adStats.questionsSinceLastMarket=0;adStats.lastAdWasGoogle=false;adStats.questionsSinceLastGoogle++;}
+window.closeAd=()=>document.getElementById('adSlot').style.display='none';
+window.ans=(i)=>{let btns=document.querySelectorAll('.opt');btns.forEach(b=>b.style.pointerEvents='none');let ok=i===(currentQ.c||0);if(ok){btns[i].classList.add('correct');score++;}else{btns[i].classList.add('wrong');btns[currentQ.c||0]?.classList.add('correct');}document.getElementById('explainBox').innerText=currentQ.translatedExp;document.getElementById('explainBox').classList.add('show');document.getElementById('score').innerText=score;document.getElementById('nextBtn').style.display='block';}
+window.nextQ=()=>{idx++;adStats.questionsSinceLastGoogle++;adStats.questionsSinceLastMarket++;showQ();}
+function getStreak(){return JSON.parse(localStorage.getItem('lifeQuestStreak')||'{"streak":0,"best":0,"lastDate":null,"history":[]}');}
+function saveStreak(d){localStorage.setItem('lifeQuestStreak',JSON.stringify(d));}
+function markTodayComplete(){let d=getStreak();let today=new Date().toDateString();let y=new Date(Date.now()-86400000).toDateString();if(d.lastDate===today)return d;if(d.lastDate===y||!d.lastDate)d.streak++;else d.streak=1;d.lastDate=today;if(d.streak>d.best)d.best=d.streak;if(!d.history.includes(today))d.history.push(today);if(d.history.length>10)d.history=d.history.slice(-10);saveStreak(d);return d;}
+function renderStreak(){let d=getStreak();document.getElementById('streakNum').innerText=d.streak;document.getElementById('bestStreak').innerText=d.best;let cal=document.getElementById('streakCal');if(!cal)return;cal.innerHTML='';for(let i=6;i>=0;i--){let date=new Date(Date.now()-i*86400000);let ds=date.toDateString();let done=d.history.includes(ds);cal.innerHTML+=`<div class="day ${done?'done':''}">${done?'✓':date.getDate()}</div>`;}}
+renderStreak();filterLangs('');window.selectLang('en','English');
+</script>
+</body>
+</html>
